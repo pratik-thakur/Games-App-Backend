@@ -7,9 +7,11 @@ const {sendWelcomeEmail , sendCancelationEmail}=require('../emails/account')
 
 //Register User
 router.post('/register',async (req,res)=>{
+    delete req.body.role
     const user = new User(req.body)
     //console.log(req.body)
     try{
+
         await user.save()
         if(user.email && user.name)
         {
@@ -110,7 +112,8 @@ router.get('/users/me',auth,async(req,res)=>{
 //get list of games
 router.get('/games',auth,async(req,res)=>{
     try{
-        const games = await Game.find()
+        const games = await Games.find()
+        
         res.send(games)
     }catch(e){
         res.status(500).send()

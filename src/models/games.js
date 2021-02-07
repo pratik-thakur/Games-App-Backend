@@ -18,6 +18,17 @@ const gameSchema = new mongoose.Schema({
 },{
     timestamps:true
 })
+
+gameSchema.methods.toJSON = function(){
+    const user =this
+    const userObject = user.toObject()
+
+    delete userObject._id
+    delete userObject.createdAt
+    delete userObject.updatedAt
+
+    return userObject
+}
 gameSchema.plugin(uniqueValidator)
 const Games = mongoose.model('Games',gameSchema)
 
