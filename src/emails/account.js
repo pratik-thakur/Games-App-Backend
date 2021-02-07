@@ -15,8 +15,8 @@ const sendCancelationEmail =(email,name)=>{
     sgMail.send({
         to:email,
         from:'pratikthakur421@gmail.com',
-        subject:'Sorry to see you go!',
-        text:`Goodbye, ${name} . I hope to see you back Sometime soon.`
+        subject:'Sorry to see you go! Pratik Games-App',
+        text:`Goodbye, ${name} . I hope to see you back Sometime soon.I am eagerly waiting and excited for working with you all.`
     }).then()
     .catch(e=>console.log(e))
 

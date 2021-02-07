@@ -3,7 +3,7 @@ const router = new express.Router()
 const auth = require('../middleware/auth')
 const User = require('../models/users')
 const Games = require('../models/games')
-const {sendWelcomeEmail}=require('../emails/account')
+const {sendWelcomeEmail , sendCancelationEmail}=require('../emails/account')
 
 //Register User
 router.post('/register',async (req,res)=>{
@@ -35,6 +35,45 @@ router.post('/login',async (req,res)=>{
     }
 })
 
+router.post('/logout',auth,async(req,res)=>{
+    try{
+        req.user.tokens = req.user.tokens.filter(token=>{
+            return token.token!==req.token
+        })
+        await req.user.save()
+        res.send()
+    }catch(e){
+        res.status(500).send()
+    }
+})
+
+router.post('/logoutAll',auth,async (req,res)=>{
+    try{
+        req.user.tokens=[]
+        await req.user.save()
+        res.send()
+    }catch(e){
+        res.status(500).send()
+
+    }
+})
+
+router.delete('/users/me',auth,async(req,res)=>{
+    try{
+        //const user = await User.findByIdAndDelete(req.user._id)
+        // if(!user)
+        // return res.status(404).send()
+        await req.user.remove()
+        if(req.user.email && req.user.name)
+        {
+        sendCancelationEmail(req.user.email,req.user.name)
+        }
+        res.send(req.user)
+
+    }catch(e){
+        res.status(500).send()
+    }
+})
 //update  user
 router.patch('/users/me',auth,async(req,res)=>{
     const updates = Object.keys(req.body)
